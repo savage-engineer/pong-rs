@@ -15,13 +15,13 @@ use ball::Ball;
 use drawable::Drawable;
 use paddle::Paddle;
 
-const MOVESPEED: f64 = 5.0;
+const MOVESPEED: f64 = 2.0;
 const INITIAL_HEALTH: u8 = 3;
 const WIDTH: i32 = 50;
 const HEIGHT: i32 = 10;
 
 // Player state
-pub struct Player {
+pub struct Computer {
     pub x: i32,
     pub y: i32,
     w: i32,
@@ -30,15 +30,15 @@ pub struct Player {
     health: u8,
 }
 
-// Methods on the Player
-impl Player {
-    // Constructor for the Player
-    pub fn new(canvas: &Canvas<Window>) -> Player {
+// Methods on the Computer 
+impl Computer {
+    // Constructor for the Computer 
+    pub fn new(canvas: &Canvas<Window>) -> Computer {
         let window_size = canvas.window().size();
-        // Return the player here
-        Player {
+        // Return the Computer here
+        Computer {
             x: (window_size.0 as i32 - WIDTH) / 2,
-            y: window_size.1 as i32 - HEIGHT,
+            y: 0,
             w: WIDTH,
             h: HEIGHT,
             speed: 0.0,
@@ -47,31 +47,18 @@ impl Player {
     }
 }
 
-impl Paddle for Player {
+impl Paddle for Computer {
     // Provide a method to reset the player if game restarted 
     fn reset(&mut self) {
         // TODO
     }
 
     fn move_left(&mut self, status: bool) {
-        if status {
-            self.speed = -MOVESPEED;
-        } else {
-            if self.speed < 0.0 {
-                self.speed = 0.0;
-            }
-
-        }
+        // TODO
     }
 
     fn move_right(&mut self, status: bool) {
-        if status {
-            self.speed = MOVESPEED;
-        } else {
-            if self.speed > 0.0 {
-                self.speed = 0.0;
-            }
-        }
+        // TODO
     }
 
     /// Call to lower the health of a player
@@ -88,46 +75,32 @@ impl Paddle for Player {
     }
 }
 
-impl Drawable for Player {
+impl Drawable for Computer {
     fn update(&mut self) {
-        let new_x = self.x + self.speed as i32;
-
-        self.x = new_x;        
+        // TODO
     }
 
     fn draw(&self, canvas: &mut Canvas<Window>) {
-        // Set player color to white
-        let color = pixels::Color::RGB(255, 255, 255); 
-        // Draw player
+        // Set computer color to red 
+        let color = pixels::Color::RGB(255, 0, 0); 
+        // Draw computer 
         canvas.rectangle(self.x as i16,
                            self.y as i16,
                            (self.x + self.w) as i16,
                            (self.y + self.h) as i16,
                            color)
-                           .expect("Player should have rendered");
+                           .expect("Computer should have rendered");
     }
 
     fn on_key_down(&mut self, event: &Event) {
         match event {
-            &Event::KeyDown { keycode: Some(Keycode::Left), .. } => {
-                self.move_left(true);
-            }
-            &Event::KeyDown { keycode: Some(Keycode::Right), .. } => {
-                self.move_right(true);
-            }
-            _ => {} // Discard other keycodes for now
+            _ => {}
         }
     }
 
-    fn on_key_up(&mut self, event: &Event) {
+    fn on_key_up(&mut self, event:&Event) {
         match event {
-            &Event::KeyUp { keycode: Some(Keycode::Left), .. } => {
-                self.move_left(false);
-            }
-            &Event::KeyUp { keycode: Some(Keycode::Right), .. } => {
-                self.move_right(false);
-            }
-            _ => {} // Discard other keycodes for now
+            _ => {}
         }
     }
 }
