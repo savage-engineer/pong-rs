@@ -70,7 +70,7 @@ impl Paddle for Computer {
         self.health == 0
     }
 
-    fn touch(&mut self, b: &Ball) {
+    fn touch(&mut self, b: &mut Ball) {
         // TODO
     }
 
@@ -92,7 +92,7 @@ impl Drawable for Computer {
         // Set computer color to red 
         let color = pixels::Color::RGB(255, 0, 0); 
         // Draw computer 
-        canvas.rectangle(self.x as i16,
+        canvas.box_(self.x as i16,
                            self.y as i16,
                            (self.x + self.w) as i16,
                            (self.y + self.h) as i16,

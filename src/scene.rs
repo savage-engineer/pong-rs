@@ -1,4 +1,5 @@
 extern crate sdl2;
+extern crate rand;
 
 // SDL2
 use sdl2::render::Canvas;
@@ -10,6 +11,8 @@ use sdl2::keyboard::Keycode;
 // Standard Stuff
 use std::cell::RefCell;
 use std::rc::Rc;
+
+use scene::rand::Rng;
 
 // Our stuff
 use player::Player;
@@ -45,7 +48,7 @@ impl Scene {
 
         Scene {
             paused: false,
-            game_ended: false,
+            game_ended: true,
             arena_dimensions: canvas.window().size(),
             player: player.clone(),
             computer: computer.clone(),
@@ -57,7 +60,7 @@ impl Scene {
 
 impl Drawable for Scene {
     fn update(&mut self) {
-        if !self.paused {
+        if !self.paused && !self.game_ended {
             for entity in &self.entities {
                 entity.borrow_mut().update();
                 
@@ -83,11 +86,31 @@ impl Drawable for Scene {
             &Event::KeyDown { keycode: Some(Keycode::P), .. } => {
                 self.paused = !self.paused;
             }
+            &Event::KeyDown { keycode: Some(Keycode::Return), .. } => {
+                if !self.paused {
+                    match self.game_ended {
+                        true => {
+                            self.game_ended = false;
+                            self.ball.borrow_mut().kick_off();
+                        }
+                        false => {
+                            let ref mut player = self.player.borrow_mut();
+                            let ref mut computer = self.computer.borrow_mut();
+                            let ref mut ball = self.ball.borrow_mut();
+                            
+                            player.reset();
+                            computer.reset();
+                            ball.reset();
+                            self.game_ended = true;
+                        }
+                    }
+                }
+            }
             _ => {}
         }
 
         // Propagate events to scene entities
-        if !self.paused {
+        if !self.paused && !self.game_ended {
             for entity in &self.entities {
                 entity.borrow_mut().on_key_down(event);
             }
@@ -99,7 +122,7 @@ impl Drawable for Scene {
             _ => {}
         }
 
-        if !self.paused {
+        if !self.paused && !self.game_ended {
             for entity in &self.entities {
                 entity.borrow_mut().on_key_up(event);
             }
