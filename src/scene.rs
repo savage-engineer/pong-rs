@@ -22,6 +22,7 @@ pub struct Scene {
     // State
     paused: bool,
     game_ended: bool,
+    arena_dimensions: (u32, u32),
     // Players
     player: Rc<RefCell<Player>>,
     computer: Rc<RefCell<Computer>>,
@@ -45,6 +46,7 @@ impl Scene {
         Scene {
             paused: false,
             game_ended: false,
+            arena_dimensions: canvas.window().size(),
             player: player.clone(),
             computer: computer.clone(),
             ball: ball.clone(),
@@ -58,6 +60,14 @@ impl Drawable for Scene {
         if !self.paused {
             for entity in &self.entities {
                 entity.borrow_mut().update();
+                
+            }
+            // Reset bounds
+            {
+                let ref mut player = self.player.borrow_mut();
+                let ref mut computer = self.computer.borrow_mut();
+                player.return_to_bounds(self.arena_dimensions);
+                computer.return_to_bounds(self.arena_dimensions);
             }
         }
     }

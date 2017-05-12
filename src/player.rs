@@ -86,6 +86,16 @@ impl Paddle for Player {
     fn touch(&mut self, b: &Ball) {
         // TODO
     }
+
+    fn return_to_bounds(&mut self, arena_dimensions: (u32, u32)) {
+        if self.x < 0 {
+            self.x = 0;
+            self.speed = 0.0;
+        } else if self.x > arena_dimensions.0 as i32 - self.w {
+            self.x = arena_dimensions.0 as i32 - self.w;
+            self.speed = 0.0;
+        }
+    }
 }
 
 impl Drawable for Player {
@@ -112,7 +122,13 @@ impl Drawable for Player {
             &Event::KeyDown { keycode: Some(Keycode::Left), .. } => {
                 self.move_left(true);
             }
+            &Event::KeyDown { keycode: Some(Keycode::A), .. } => {
+                self.move_left(true);
+            }
             &Event::KeyDown { keycode: Some(Keycode::Right), .. } => {
+                self.move_right(true);
+            }
+            &Event::KeyDown { keycode: Some(Keycode::D), .. } => {
                 self.move_right(true);
             }
             _ => {} // Discard other keycodes for now
@@ -124,7 +140,13 @@ impl Drawable for Player {
             &Event::KeyUp { keycode: Some(Keycode::Left), .. } => {
                 self.move_left(false);
             }
+            &Event::KeyUp { keycode: Some(Keycode::A), .. } => {
+                self.move_left(false);
+            }
             &Event::KeyUp { keycode: Some(Keycode::Right), .. } => {
+                self.move_right(false);
+            }
+            &Event::KeyUp { keycode: Some(Keycode::D), .. } => {
                 self.move_right(false);
             }
             _ => {} // Discard other keycodes for now
