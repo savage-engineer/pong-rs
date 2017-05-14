@@ -11,7 +11,7 @@ pub trait Paddle {
 
     fn is_dead(&self) -> bool;
     
-    fn touch(&mut self, b: &mut Ball);
+    fn touch(&self, b: &mut Ball);
 
     fn return_to_bounds(&mut self, arena_dimensions: (u32, u32));
 }

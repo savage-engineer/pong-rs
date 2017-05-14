@@ -20,13 +20,14 @@ use drawable::Drawable;
 
 const RADIUS: i32 = 5;
 const INIT_SPEED: f64 = 2.0;
-const STEP_UP: f64 = 1.0;
+const STEP_UP: f64 = 0.5;
+const MAX: f64 = 8.0;
 
 // Ball state
 pub struct Ball {
     pub x: i32,
     pub y: i32,
-    radius: i32,
+    pub radius: i32,
     speed: (f64, f64),
     arena_dimensions: (u32, u32),
 }
@@ -57,12 +58,12 @@ impl Ball {
         self.speed = (INIT_SPEED * multipliers.0, INIT_SPEED * multipliers.1 + 1.0);
     } 
 
-    pub fn reverse(&mut self, paddle: &Paddle) {
+    pub fn reverse(&mut self) {
         if self.speed.1 < 0.0 {
-            self.speed.1 -= STEP_UP;
+            if self.speed.1 < -MAX { self.speed.1 -= STEP_UP; }
             self.speed.1 *= -1.0
-        } else if self.speed.1 < 0.0 {
-            self.speed.1 += STEP_UP;
+        } else if self.speed.1 > 0.0 {
+            if self.speed.1 < MAX { self.speed.1 += STEP_UP; }
             self.speed.1 *= -1.0;
         }
     }
@@ -74,20 +75,20 @@ impl Drawable for Ball {
         self.y += self.speed.1 as i32;
 
         // Check and handle bounds (left and right)
-        if self.x <= 0 {
-            self.x = 0;
+        if self.x < 0 + self.radius {
+            self.x = 0 + self.radius;
             self.speed.0 *= -1.0;
-        } else if self.x >= self.arena_dimensions.0 as i32 - self.radius * 2 {
-            self.x = self.arena_dimensions.0 as i32 - self.radius * 2;
+        } else if self.x > self.arena_dimensions.0 as i32 - self.radius {
+            self.x = self.arena_dimensions.0 as i32 - self.radius;
             self.speed.0 *= -1.0;
         }
 
         // Check and handle bounds (top and bottom)
-        if self.y <= 0 {
-            self.y = 0;
+        if self.y < 0 + self.radius {
+            self.y = 0 + self.radius;
             self.speed.1 *= -1.0;
-        } else if self.y >= self.arena_dimensions.1 as i32 - self.radius * 2 {
-            self.y = self.arena_dimensions.1 as i32 - self.radius * 2;
+        } else if self.y > self.arena_dimensions.1 as i32 - self.radius {
+            self.y = self.arena_dimensions.1 as i32 - self.radius;
             self.speed.1 *= -1.0;
         }
     }

@@ -72,6 +72,12 @@ impl Drawable for Scene {
                 player.return_to_bounds(self.arena_dimensions);
                 computer.return_to_bounds(self.arena_dimensions);
             }
+            // Check for collision between ball and paddles
+            {
+                let ref mut ball = self.ball.borrow_mut();
+                self.player.borrow().touch(ball);
+                self.computer.borrow().touch(ball);
+            }
         }
     }
 

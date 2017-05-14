@@ -50,7 +50,8 @@ impl Computer {
 impl Paddle for Computer {
     // Provide a method to reset the player if game restarted 
     fn reset(&mut self) {
-        // TODO
+        self.speed = 0.0;
+        self.health = INITIAL_HEALTH;
     }
 
     fn move_left(&mut self, status: bool) {
@@ -70,8 +71,14 @@ impl Paddle for Computer {
         self.health == 0
     }
 
-    fn touch(&mut self, b: &mut Ball) {
-        // TODO
+    fn touch(&self, b: &mut Ball) {
+        if b.y - b.radius < self.y + self.h &&
+           b.x < self.x + self.w &&
+           b.x > self.x {
+            b.y = self.y + b.radius + self.h;
+            b.reverse();
+        }
+
     }
 
     fn return_to_bounds(&mut self, arena_dimensions: (u32, u32)) {
