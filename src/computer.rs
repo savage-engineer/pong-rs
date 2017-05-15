@@ -26,6 +26,8 @@ pub struct Computer {
     pub y: i32,
     w: i32,
     h: i32,
+    target_x: i32,
+    targeting: bool, 
     speed: f64,
     health: u8,
 }
@@ -41,6 +43,8 @@ impl Computer {
             y: 0,
             w: WIDTH,
             h: HEIGHT,
+            target_x: 0,
+            targeting: false,
             speed: 0.0,
             health: INITIAL_HEALTH,
         }
@@ -55,11 +59,11 @@ impl Paddle for Computer {
     }
 
     fn move_left(&mut self, status: bool) {
-        // TODO
+        self.speed = -MOVESPEED;
     }
 
     fn move_right(&mut self, status: bool) {
-        // TODO
+        self.speed = MOVESPEED;
     }
 
     /// Call to lower the health of a player
@@ -71,7 +75,15 @@ impl Paddle for Computer {
         self.health == 0
     }
 
-    fn touch(&self, b: &mut Ball) {
+    fn touch(&mut self, b: &mut Ball) {
+        // First update internal note of position
+        self.target_x = b.x;
+        if b.speed.1 > 0.0 {
+            self.targeting = false;
+        } else {
+            self.targeting = true;
+        }
+        // Check if hit
         if b.y - b.radius < self.y + self.h &&
            b.x < self.x + self.w &&
            b.x > self.x {
@@ -92,7 +104,20 @@ impl Paddle for Computer {
 
 impl Drawable for Computer {
     fn update(&mut self) {
-        // TODO
+        self.x += self.speed as i32;
+        // After movement reevaluate position and move appropriately
+        if self.targeting {
+            if self.target_x > self.x + (self.w/2) {
+                self.move_right(false);
+            } else if self.target_x < self.x + (self.w/2) {
+                self.move_left(false);
+            } 
+        }
+        
+        if self.target_x < self.x + 5 * (self.w/9) &&
+                  self.target_x > self.x + 4 * (self.w/9) {
+            self.speed = 0.0;
+        }
     }
 
     fn draw(&self, canvas: &mut Canvas<Window>) {

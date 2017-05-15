@@ -84,7 +84,7 @@ impl Paddle for Player {
         self.health == 0
     }
 
-    fn touch(&self, b: &mut Ball) {
+    fn touch(&mut self, b: &mut Ball) {
         if b.y + b.radius > self.y &&
            b.x < self.x + self.w &&
            b.x > self.x {

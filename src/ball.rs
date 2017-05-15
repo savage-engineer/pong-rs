@@ -28,7 +28,7 @@ pub struct Ball {
     pub x: i32,
     pub y: i32,
     pub radius: i32,
-    speed: (f64, f64),
+    pub speed: (f64, f64),
     arena_dimensions: (u32, u32),
 }
 

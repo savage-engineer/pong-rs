@@ -75,8 +75,8 @@ impl Drawable for Scene {
             // Check for collision between ball and paddles
             {
                 let ref mut ball = self.ball.borrow_mut();
-                self.player.borrow().touch(ball);
-                self.computer.borrow().touch(ball);
+                self.player.borrow_mut().touch(ball);
+                self.computer.borrow_mut().touch(ball);
             }
         }
     }
