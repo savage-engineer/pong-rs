@@ -1,7 +1,7 @@
 use ball::Ball;
 
 pub trait Paddle {
-    fn reset(&mut self);
+    fn reset(&mut self, centre: u32);
 
     fn move_left(&mut self, status: bool);
 

@@ -93,7 +93,7 @@ impl Drawable for Scene {
                 self.paused = !self.paused;
             }
             &Event::KeyDown { keycode: Some(Keycode::Return), .. } => {
-                if !self.paused {
+                if self.paused {
                     match self.game_ended {
                         true => {
                             self.game_ended = false;
@@ -103,9 +103,9 @@ impl Drawable for Scene {
                             let ref mut player = self.player.borrow_mut();
                             let ref mut computer = self.computer.borrow_mut();
                             let ref mut ball = self.ball.borrow_mut();
-                            
-                            player.reset();
-                            computer.reset();
+
+                            player.reset(self.arena_dimensions.0 / 2);
+                            computer.reset(self.arena_dimensions.0 / 2);
                             ball.reset();
                             self.game_ended = true;
                         }

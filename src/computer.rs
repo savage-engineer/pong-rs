@@ -53,7 +53,8 @@ impl Computer {
 
 impl Paddle for Computer {
     // Provide a method to reset the player if game restarted 
-    fn reset(&mut self) {
+    fn reset(&mut self, centre: u32) {
+        self.x = centre as i32 - (self.w/2);
         self.speed = 0.0;
         self.health = INITIAL_HEALTH;
     }
