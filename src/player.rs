@@ -10,7 +10,7 @@ use sdl2::pixels;
 // SDL2 gfx
 use sdl2::gfx::primitives::DrawRenderer;
 
-// Game 
+// Game
 use ball::Ball;
 use drawable::Drawable;
 use paddle::Paddle;
@@ -19,6 +19,7 @@ const MOVESPEED: f64 = 5.0;
 const INITIAL_HEALTH: u8 = 3;
 const WIDTH: i32 = 50;
 const HEIGHT: i32 = 10;
+const DAMAGE_CD: u8 = 5;
 
 // Player state
 pub struct Player {
@@ -28,6 +29,7 @@ pub struct Player {
     h: i32,
     speed: f64,
     health: u8,
+    hit_cd: u8,
 }
 
 // Methods on the Player
@@ -43,14 +45,15 @@ impl Player {
             h: HEIGHT,
             speed: 0.0,
             health: INITIAL_HEALTH,
+            hit_cd: 0,
         }
     }
 }
 
 impl Paddle for Player {
-    // Provide a method to reset the player if game restarted 
+    // Provide a method to reset the player if game restarted
     fn reset(&mut self, centre: u32) {
-        self.x = centre as i32 - (self.w/2);
+        self.x = centre as i32 - (self.w / 2);
         self.speed = 0.0;
         self.health = INITIAL_HEALTH;
     }
@@ -76,9 +79,12 @@ impl Paddle for Player {
         }
     }
 
-    /// Call to lower the health of a player
+    /// Call to lower the health of a player only if safety period expired
     fn drop_health(&mut self) {
-        self.health -= 1;
+        if self.hit_cd == 0 {
+            self.health -= 1;
+            self.hit_cd = DAMAGE_CD;
+        }
     }
 
     fn is_dead(&self) -> bool {
@@ -86,9 +92,7 @@ impl Paddle for Player {
     }
 
     fn touch(&mut self, b: &mut Ball) {
-        if b.y + b.radius > self.y &&
-           b.x < self.x + self.w &&
-           b.x > self.x {
+        if b.y + b.radius > self.y && b.x < self.x + self.w && b.x > self.x {
             b.y = self.y - b.radius;
             b.reverse();
         }
@@ -107,19 +111,24 @@ impl Paddle for Player {
 
 impl Drawable for Player {
     fn update(&mut self) {
+        // Decrement countdown if we have outstanding time
+        if self.hit_cd > 0 {
+            self.hit_cd -= 1;
+        }
         self.x += self.speed as i32;
     }
 
     fn draw(&self, canvas: &mut Canvas<Window>) {
-        // Set player color to green 
-        let color = pixels::Color::RGB(0, 255, 0); 
+        // Set player color to green
+        let color = pixels::Color::RGB(0, 255, 0);
         // Draw player
-        canvas.box_(self.x as i16,
-                           self.y as i16,
-                           (self.x + self.w) as i16,
-                           (self.y + self.h) as i16,
-                           color)
-                           .expect("Player should have rendered");
+        canvas
+            .box_(self.x as i16,
+                  self.y as i16,
+                  (self.x + self.w) as i16,
+                  (self.y + self.h) as i16,
+                  color)
+            .expect("Player should have rendered");
     }
 
     fn on_key_down(&mut self, event: &Event) {

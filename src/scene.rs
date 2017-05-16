@@ -56,6 +56,17 @@ impl Scene {
             entities: entities,
         }
     }
+
+    fn reset(&mut self) {
+        let ref mut player = self.player.borrow_mut();
+        let ref mut computer = self.computer.borrow_mut();
+        let ref mut ball = self.ball.borrow_mut();
+
+        player.reset(self.arena_dimensions.0 / 2);
+        computer.reset(self.arena_dimensions.0 / 2);
+        ball.reset();
+        self.game_ended = true;
+    }
 }
 
 impl Drawable for Scene {
@@ -63,20 +74,34 @@ impl Drawable for Scene {
         if !self.paused && !self.game_ended {
             for entity in &self.entities {
                 entity.borrow_mut().update();
-                
+
             }
             // Reset bounds
             {
-                let ref mut player = self.player.borrow_mut();
-                let ref mut computer = self.computer.borrow_mut();
-                player.return_to_bounds(self.arena_dimensions);
-                computer.return_to_bounds(self.arena_dimensions);
+                self.player.borrow_mut().return_to_bounds(self.arena_dimensions);
+                self.computer.borrow_mut().return_to_bounds(self.arena_dimensions);
             }
             // Check for collision between ball and paddles
             {
                 let ref mut ball = self.ball.borrow_mut();
                 self.player.borrow_mut().touch(ball);
                 self.computer.borrow_mut().touch(ball);
+            }
+            // Check for health drop
+            {
+                let ref ball = self.ball.borrow(); 
+                // Some grim hardcode here :^)
+                if ball.y - ball.radius == 0 {
+                    self.computer.borrow_mut().drop_health();
+                } else if ball.y + ball.radius == self.arena_dimensions.1 as i32 {
+                    self.player.borrow_mut().drop_health();
+                }
+            }
+            // Reset if game over
+            if self.player.borrow().is_dead() ||
+               self.computer.borrow().is_dead() {
+                println!("Someone is dead!");
+                self.reset();
             }
         }
     }
@@ -93,21 +118,14 @@ impl Drawable for Scene {
                 self.paused = !self.paused;
             }
             &Event::KeyDown { keycode: Some(Keycode::Return), .. } => {
-                if self.paused {
+                if !self.paused {
                     match self.game_ended {
                         true => {
                             self.game_ended = false;
                             self.ball.borrow_mut().kick_off();
                         }
                         false => {
-                            let ref mut player = self.player.borrow_mut();
-                            let ref mut computer = self.computer.borrow_mut();
-                            let ref mut ball = self.ball.borrow_mut();
-
-                            player.reset(self.arena_dimensions.0 / 2);
-                            computer.reset(self.arena_dimensions.0 / 2);
-                            ball.reset();
-                            self.game_ended = true;
+                            self.reset();
                         }
                     }
                 }

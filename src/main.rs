@@ -20,7 +20,7 @@ use drawable::Drawable;
 
 const SCREEN_WIDTH: u32 = 600;
 const SCREEN_HEIGHT: u32 = 480;
-const TITLE: &str = "👌🏻😂 pong-rs 👌🏻😂";
+const TITLE: &str = "pong-rs";
 
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -49,7 +49,7 @@ pub fn main() {
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } => break 'running,
                 Event::KeyDown { .. } => {
                     scene.on_key_down(&event);
-                },
+                }
                 Event::KeyUp { .. } => {
                     scene.on_key_up(&event);
                 }
@@ -57,9 +57,9 @@ pub fn main() {
             }
         }
 
-        canvas.set_draw_color(Color::RGB(0,0,0));
+        canvas.set_draw_color(Color::RGB(0, 0, 0));
         // Clear canvas
-        canvas.clear();  
+        canvas.clear();
 
         // Update and draw the scene
         scene.update();
