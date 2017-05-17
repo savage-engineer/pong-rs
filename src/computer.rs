@@ -100,9 +100,11 @@ impl Paddle for Computer {
 
     fn return_to_bounds(&mut self, arena_dimensions: (u32, u32)) {
         if self.x < 0 {
-
-        } else if self.x > arena_dimensions.0 as i32 {
-
+            self.x = 0;
+            self.speed = 0.0;
+        } else if self.x > arena_dimensions.0 as i32 - self.w {
+            self.x = arena_dimensions.0 as i32 - self.w;
+            self.speed = 0.0;
         }
     }
 }

@@ -20,6 +20,7 @@ const INITIAL_HEALTH: u8 = 3;
 const WIDTH: i32 = 50;
 const HEIGHT: i32 = 10;
 const DAMAGE_CD: u8 = 5;
+const SLIDE_INCREASE: f32 = 0.5;
 
 // Player state
 pub struct Player {
@@ -94,6 +95,7 @@ impl Paddle for Player {
     fn touch(&mut self, b: &mut Ball) {
         if b.y + b.radius > self.y && b.x < self.x + self.w && b.x > self.x {
             b.y = self.y - b.radius;
+            b.speed.0 += self.speed * SLIDE_INCREASE as f64;
             b.reverse();
         }
     }
