@@ -5,7 +5,6 @@ extern crate rand;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
 use sdl2::pixels;
 
 // SDL2 gfx
@@ -15,7 +14,6 @@ use sdl2::gfx::primitives::DrawRenderer;
 use self::rand::Rng;
 
 // Game
-use paddle::Paddle;
 use drawable::Drawable;
 
 const RADIUS: i32 = 5;

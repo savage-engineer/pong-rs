@@ -4,15 +4,12 @@ extern crate rand;
 // SDL2
 use sdl2::render::Canvas;
 use sdl2::video::Window;
-use sdl2::pixels::Color;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
 // Standard Stuff
 use std::cell::RefCell;
 use std::rc::Rc;
-
-use scene::rand::Rng;
 
 // Our stuff
 use player::Player;
@@ -74,7 +71,6 @@ impl Drawable for Scene {
         if !self.paused && !self.game_ended {
             for entity in &self.entities {
                 entity.borrow_mut().update();
-
             }
             // Reset bounds
             {
@@ -114,10 +110,10 @@ impl Drawable for Scene {
 
     fn on_key_down(&mut self, event: &Event) {
         match event {
-            &Event::KeyDown { keycode: Some(Keycode::P), .. } => {
+            &Event::KeyDown { keycode: Some(Keycode::P), repeat: false, .. } => {
                 self.paused = !self.paused;
             }
-            &Event::KeyDown { keycode: Some(Keycode::Return), .. } => {
+            &Event::KeyDown { keycode: Some(Keycode::Return), repeat: false, .. } => {
                 if !self.paused {
                     match self.game_ended {
                         true => {
