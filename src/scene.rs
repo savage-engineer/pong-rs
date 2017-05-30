@@ -69,6 +69,9 @@ impl Scene {
 impl Drawable for Scene {
     fn update(&mut self) {
         if !self.paused && !self.game_ended {
+
+            let mut reset = false;
+
             for entity in &self.entities {
                 entity.borrow_mut().update();
             }
@@ -85,18 +88,16 @@ impl Drawable for Scene {
             }
             // Check for health drop
             {
-                let ref ball = self.ball.borrow(); 
+                let ref mut ball = self.ball.borrow_mut();
                 // Some grim hardcode here :^)
                 if ball.y - ball.radius == 0 {
-                    self.computer.borrow_mut().drop_health();
+                    reset = true;
                 } else if ball.y + ball.radius == self.arena_dimensions.1 as i32 {
-                    self.player.borrow_mut().drop_health();
+                    reset = true;
                 }
             }
-            // Reset if game over
-            if self.player.borrow().is_dead() ||
-               self.computer.borrow().is_dead() {
-                println!("Someone is dead!");
+
+            if reset == true {
                 self.reset();
             }
         }

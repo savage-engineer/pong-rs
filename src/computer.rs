@@ -14,7 +14,7 @@ use ball::Ball;
 use drawable::Drawable;
 use paddle::Paddle;
 
-const MOVESPEED: f64 = 2.0;
+const MOVESPEED: f64 = 3.0;
 const INITIAL_HEALTH: u8 = 3;
 const WIDTH: i32 = 50;
 const HEIGHT: i32 = 10;
@@ -67,18 +67,6 @@ impl Paddle for Computer {
 
     fn move_right(&mut self, status: bool) {
         self.speed = MOVESPEED;
-    }
-
-    /// Call to lower the health of a player
-    fn drop_health(&mut self) {
-        if self.hit_cd == 0 {
-            self.health -= 1;
-            self.hit_cd = DAMAGE_CD;
-        }
-    }
-
-    fn is_dead(&self) -> bool {
-        self.health == 0
     }
 
     fn touch(&mut self, b: &mut Ball) {

@@ -15,8 +15,7 @@ use ball::Ball;
 use drawable::Drawable;
 use paddle::Paddle;
 
-const MOVESPEED: f64 = 5.0;
-const INITIAL_HEALTH: u8 = 3;
+const MOVESPEED: f64 = 3.0;
 const WIDTH: i32 = 50;
 const HEIGHT: i32 = 10;
 const DAMAGE_CD: u8 = 5;
@@ -29,7 +28,6 @@ pub struct Player {
     w: i32,
     h: i32,
     speed: f64,
-    health: u8,
     hit_cd: u8,
 }
 
@@ -45,7 +43,6 @@ impl Player {
             w: WIDTH,
             h: HEIGHT,
             speed: 0.0,
-            health: INITIAL_HEALTH,
             hit_cd: 0,
         }
     }
@@ -56,7 +53,6 @@ impl Paddle for Player {
     fn reset(&mut self, centre: u32) {
         self.x = centre as i32 - (self.w / 2);
         self.speed = 0.0;
-        self.health = INITIAL_HEALTH;
     }
 
     fn move_left(&mut self, status: bool) {
@@ -78,18 +74,6 @@ impl Paddle for Player {
                 self.speed = 0.0;
             }
         }
-    }
-
-    /// Call to lower the health of a player only if safety period expired
-    fn drop_health(&mut self) {
-        if self.hit_cd == 0 {
-            self.health -= 1;
-            self.hit_cd = DAMAGE_CD;
-        }
-    }
-
-    fn is_dead(&self) -> bool {
-        self.health == 0
     }
 
     fn touch(&mut self, b: &mut Ball) {
