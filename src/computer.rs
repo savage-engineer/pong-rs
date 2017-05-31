@@ -14,7 +14,7 @@ use ball::Ball;
 use drawable::Drawable;
 use paddle::Paddle;
 
-const MOVESPEED: f64 = 3.0;
+const MOVESPEED: f64 = 2.5;
 const INITIAL_HEALTH: u8 = 3;
 const WIDTH: i32 = 50;
 const HEIGHT: i32 = 10;

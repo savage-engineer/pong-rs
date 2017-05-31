@@ -58,14 +58,24 @@ impl Ball {
         self.speed = (INIT_SPEED * multipliers.0, INIT_SPEED * multipliers.1 + 1.0);
     }
 
-    /// Performs some sort of dodgy raycast thing to the computer's side
+    /// Performs some sort of dodgy raycast (not raycast) thing to the computer's side
     pub fn raycast(&mut self) {
-        let mut mock_pos = (self.x, self.y);
-        while mock_pos.1 - self.radius > 0 {
-            mock_pos.0 += self.speed.0 as i32;
-            mock_pos.1 += self.speed.1 as i32;
+        // Point at the head of the cast for the ball
+        let mut point = (self.x, self.y);
+        let mut mock_speed = self.speed;
+        while point.1 - self.radius > 0 {
+            // Check if the cast needs to deflect off the wall
+            if point.0 < 0 + self.radius {
+                point.0 = 0 + self.radius;
+                mock_speed.0 *= -1.0;
+            } else if point.0 > self.arena_dimensions.0 as i32 - self.radius {
+                point.0 = self.arena_dimensions.0 as i32 - self.radius;
+                mock_speed.0 *= -1.0;
+            }
+            point.0 += mock_speed.0 as i32;
+            point.1 += mock_speed.1 as i32;
         }
-        self.projected_x = mock_pos.0;
+        self.projected_x = point.0;
     }
 
     pub fn reverse(&mut self) {

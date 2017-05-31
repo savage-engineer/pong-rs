@@ -81,7 +81,7 @@ impl Paddle for Player {
             b.y = self.y - b.radius;
             b.speed.0 += self.speed * SLIDE_INCREASE as f64;
             b.reverse();
-            b.raycast();
+            b.raycast(); // is it a raycast though really
         }
     }
 

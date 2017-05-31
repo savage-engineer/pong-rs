@@ -86,7 +86,7 @@ impl Drawable for Scene {
                 self.player.borrow_mut().touch(ball);
                 self.computer.borrow_mut().touch(ball);
             }
-            // Check for health drop
+            // Check for loss 
             {
                 let ref mut ball = self.ball.borrow_mut();
                 // Some grim hardcode here :^)
