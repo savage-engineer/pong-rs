@@ -27,6 +27,7 @@ pub struct Ball {
     pub y: i32,
     pub radius: i32,
     pub speed: (f64, f64),
+    pub projected_x: i32,
     arena_dimensions: (u32, u32),
 }
 
@@ -40,6 +41,7 @@ impl Ball {
             y: (window_size.1 as i32 - 2 * RADIUS) / 2,
             radius: RADIUS,
             speed: (0.0, 0.0),
+            projected_x: 0,
             arena_dimensions: window_size,
         }
     }
@@ -54,6 +56,16 @@ impl Ball {
         let mut rng_dir = rand::thread_rng();
         let multipliers = rng_dir.gen::<(f64, f64)>();
         self.speed = (INIT_SPEED * multipliers.0, INIT_SPEED * multipliers.1 + 1.0);
+    }
+
+    /// Performs some sort of dodgy raycast thing to the computer's side
+    pub fn raycast(&mut self) {
+        let mut mock_pos = (self.x, self.y);
+        while mock_pos.1 - self.radius > 0 {
+            mock_pos.0 += self.speed.0 as i32;
+            mock_pos.1 += self.speed.1 as i32;
+        }
+        self.projected_x = mock_pos.0;
     }
 
     pub fn reverse(&mut self) {

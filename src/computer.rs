@@ -71,7 +71,7 @@ impl Paddle for Computer {
 
     fn touch(&mut self, b: &mut Ball) {
         // First update internal note of position
-        self.target_x = b.x;
+        self.target_x = b.projected_x;
         if b.speed.1 > 0.0 {
             self.targeting = false;
         } else {
