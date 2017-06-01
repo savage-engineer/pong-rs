@@ -18,7 +18,6 @@ const MOVESPEED: f64 = 2.5;
 const INITIAL_HEALTH: u8 = 3;
 const WIDTH: i32 = 50;
 const HEIGHT: i32 = 10;
-const DAMAGE_CD: u8 = 5;
 
 // Player state
 pub struct Computer {
@@ -29,8 +28,6 @@ pub struct Computer {
     target_x: i32,
     targeting: bool,
     speed: f64,
-    health: u8,
-    hit_cd: u8,
 }
 
 // Methods on the Computer
@@ -47,8 +44,6 @@ impl Computer {
             target_x: 0,
             targeting: false,
             speed: 0.0,
-            health: INITIAL_HEALTH,
-            hit_cd: 0,
         }
     }
 }
@@ -58,7 +53,6 @@ impl Paddle for Computer {
     fn reset(&mut self, centre: u32) {
         self.x = centre as i32 - (self.w / 2);
         self.speed = 0.0;
-        self.health = INITIAL_HEALTH;
     }
 
     fn move_left(&mut self, status: bool) {
@@ -98,11 +92,6 @@ impl Paddle for Computer {
 
 impl Drawable for Computer {
     fn update(&mut self) {
-        // Decrement countdown if it still remains
-        if self.hit_cd > 0 {
-            self.hit_cd -= 1;
-        }
-
         self.x += self.speed as i32;
         // After movement reevaluate position and move appropriately
         if self.targeting {
@@ -111,6 +100,8 @@ impl Drawable for Computer {
             } else if self.target_x < self.x + (self.w / 2) {
                 self.move_left(false);
             }
+        } else {
+            self.speed = 0.0;
         }
 
         if self.target_x < self.x + 5 * (self.w / 9) && self.target_x > self.x + 4 * (self.w / 9) {
