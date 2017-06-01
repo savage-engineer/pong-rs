@@ -1,4 +1,4 @@
 # pong-rs
 
 Just a simple pong-like game built as a learning exercise in Rust/SDL2.
-Code is in no way meant to be clean or even necessarily idiomatic - this project is simply to get the grasp of library bindings and syntax (and have a bit of fun with game dev). If something is a pretty bad code smell, it's probably because I either don't know the Rust idiom or I decided that having a quick and dirty solution would let me move along faster and achieve my main goal (having a "completed" project which isn't a trivial CLI util).
+This is largely "finished" and was really done as a learning exercise for Rust syntax, program structure and a brief induction to working with SDL2 (even if through Rust bindings). The quality of the code is poor, but as it's a game project I am leaving it at "it does the job" because I mainly wanted to have something simple to show for now.
