@@ -82,6 +82,9 @@ impl Paddle for Player {
             b.speed.0 = (direction.cos() * b.speed.0) 
                         + (self.speed * SLIDE_INCREASE as f64);
             b.speed.1 = -(direction.sin() * b.speed.1) - 1.0; // Step up speed
+            if b.speed.1 >= -0.5 {
+                b.speed.1 = -2.0; // Lazy handling of weird case
+            }
             b.raycast(); // is it a raycast though really
         }
     }
